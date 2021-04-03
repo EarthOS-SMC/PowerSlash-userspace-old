@@ -1359,6 +1359,117 @@ case "${command[0]}" in
 		fi
 		echo "24/${command[1]}/${command[2]}" >> "./output/$FILE"
 		;;
+	"adduser")
+		# Add user.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "25/${command[1]}" >> "./output/$FILE"
+		;;
+	"deleteuser")
+		# Delete user.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "28/${command[1]}" >> "./output/$FILE"
+		;;
+	"addgroup")
+		# Add group.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "29/${command[1]}" >> "./output/$FILE"
+		;;
+	"deletegroup")
+		# Delete group.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "2A/${command[1]}" >> "./output/$FILE"
+		;;
+	"togroup")
+		# Add user to group.
+		if ((${#command[@]} != 3)); then
+			abort_compiling "Number of arguments must be 2." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		process_argument "${command[2]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the second argument must be 1." 1 10
+		fi
+		echo "2C/${command[1]}/${command[2]}" >> "./output/$FILE"
+		;;
+	"fromgroup")
+		# Delete user from group.
+		if ((${#command[@]} != 3)); then
+			abort_compiling "Number of arguments must be 2." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		process_argument "${command[2]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the second argument must be 1." 1 10
+		fi
+		echo "2D/${command[1]}/${command[2]}" >> "./output/$FILE"
+		;;
+	"getusers")
+		# Get list of users.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "2E/${command[1]}" >> "./output/$FILE"
+		;;
+	"getgroups")
+		# Get list of groups.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "2F/${command[1]}" >> "./output/$FILE"
+		;;
+	"getgroup")
+		# Get list of users in a group.
+		if ((${#command[@]} != 3)); then
+			abort_compiling "Number of arguments must be 2." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		process_argument "${command[2]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the second argument must be 1." 1 10
+		fi
+		echo "30/${command[1]}/${command[2]}" >> "./output/$FILE"
+		;;
 	"")
 		# Comment.
 		if [[ "$disout" != "1" ]]; then

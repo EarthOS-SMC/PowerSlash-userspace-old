@@ -61,6 +61,15 @@ cmd_db ()
 	touch .functions/cd
 	touch .functions/pwd
 	touch .functions/getfile
+	touch .functions/adduser
+	touch .functions/deleteuser
+	touch .functions/addgroup
+	touch .functions/deletegroup
+	touch .functions/togroup
+	touch .functions/fromgroup
+	touch .functions/getusers
+	touch .functions/getgroups
+	touch .functions/getgroup
 }
 process_command ()
 {

@@ -1470,6 +1470,21 @@ case "${command[0]}" in
 		fi
 		echo "30/${command[1]}/${command[2]}" >> "./output/$FILE"
 		;;
+	"ls")
+		# List files in a directory.
+		if ((${#command[@]} != 3)); then
+			abort_compiling "Number of arguments must be 2." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		process_argument "${command[2]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the second argument must be 1." 1 10
+		fi
+		echo "31/${command[1]}/${command[2]}" >> "./output/$FILE"
+		;;
 	"")
 		# Comment.
 		if [[ "$disout" != "1" ]]; then

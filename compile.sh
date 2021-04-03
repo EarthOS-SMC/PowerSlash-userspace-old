@@ -70,6 +70,7 @@ cmd_db ()
 	touch .functions/getusers
 	touch .functions/getgroups
 	touch .functions/getgroup
+	touch .functions/ls
 }
 process_command ()
 {

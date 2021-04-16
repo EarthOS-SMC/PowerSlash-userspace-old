@@ -71,6 +71,7 @@ cmd_db ()
 	touch .functions/getgroups
 	touch .functions/getgroup
 	touch .functions/ls
+	touch .functions/write
 }
 process_command ()
 {

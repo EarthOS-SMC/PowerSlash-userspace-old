@@ -1522,7 +1522,7 @@ case "${command[0]}" in
 		;;
 	"sync")
 		# Sync filesystems.
-		if ((${#command[@]} != 0)); then
+		if ((${#command[@]} != 1)); then
 			abort_compiling "Number of arguments must be 0." 1 1
 		fi
 		echo "3A" >> "./output/$FILE"

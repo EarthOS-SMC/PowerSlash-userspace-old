@@ -1506,7 +1506,7 @@ case "${command[0]}" in
 		:
 		;;
 	"mkdir")
-		# Create a directory
+		# Create a directory.
 		if ((${#command[@]} != 3)); then
 			abort_compiling "Number of arguments must be 2." 1 1
 		fi
@@ -1519,6 +1519,13 @@ case "${command[0]}" in
 			abort_compiling "Number of inputs in the second argument must be from 1 to 3." 1 10
 		fi
 		echo "39/${command[1]}/${command[2]}" >> "./output/$FILE"
+		;;
+	"sync")
+		# Sync filesystems.
+		if ((${#command[@]} != 0)); then
+			abort_compiling "Number of arguments must be 0." 1 1
+		fi
+		echo "3A" >> "./output/$FILE"
 		;;
 	"")
 		# Comment.

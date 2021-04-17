@@ -72,6 +72,7 @@ cmd_db ()
 	touch .functions/getgroup
 	touch .functions/ls
 	touch .functions/write
+	touch .functions/include
 }
 process_command ()
 {
@@ -245,7 +246,7 @@ else
 	YELLOW='\033[1;33m'
 	NC='\033[0m'
 fi
-SOURCE_FILE=$1
+SOURCE_FILE="$1"
 EXT=""
 ign=0
 disout="$1"
@@ -263,14 +264,11 @@ if [[ "$EXT" = "$SOURCE_FILE" ]]; then
 	NAME="$EXT"
 	EXT=""
 fi
-if test -f "$SOURCE_FILE"; then
-	# Nothing here
-	:
-else
-	echo "Error: Couldn't open ${FILE}."
+if ! [[ -f "$SOURCE_FILE" ]]; then
+	echo "Error: Couldn't open ${SOURCE_FILE}."
 	exit -1
 fi
-IFS=$'\r\n' GLOBIGNORE='*' command eval  'PRG=($(cat $SOURCE_FILE))'
+IFS=$'\r\n' GLOBIGNORE='*' command eval  'OLDPRG=($(cat $SOURCE_FILE))'
 if [[ "${PRG[0]}" = '//!Lithium' ]]; then
 	arch="lithium"
 	outext="bin"
@@ -285,11 +283,16 @@ elif [[ "$EXT" = "pwsle" ]] || [[ "$EXT" = "PWSLE" ]]; then
 else
 	FILE="${SOURCE_FILE}.$outext"
 fi
+if [[ "$3" != "" ]]; then
+	FILE="$3"
+fi
 echo > "./output/$FILE" && rm "./output/$FILE" && touch "./output/$FILE"
-if [ -d "./.functions" ]; then
+if [ -d "./.functions" ] && [[ "$3" = "" ]]; then
 	rm -rf ./.functions
 fi
-mkdir ./.functions
+if [[ "$3" = "" ]]; then
+	mkdir ./.functions
+fi
 echo > "./output/${FILE}.old" && rm "./output/${FILE}.old" && touch "./output/${FILE}.old"
 cmd_db
 def=0
@@ -297,6 +300,46 @@ libid=0
 func=0
 ifs=0
 # Compile
+prg_len="${#OLDPRG[@]}"
+if [[ "$2" != "1" ]]; then
+	print_info "Searching for includes..."
+fi
+PRG=()
+i1=0
+while (( i1 < prg_len )); do
+	i1="$(($i1+1))"
+	ign=1
+	process_command "${OLDPRG[$(($i1-1))]}"
+	if [[ "${command[0]}" = "include" ]]; then
+		process_argument2 "${command[1]}"
+		if [[ "$2" != "1" ]]; then
+			print_info "Including '${argument[0]}'" 1
+		fi
+		if ! [[ -f "./include/${argument[0]}" ]]; then
+			abort_compiling "${argument[0]}: File not found"
+		fi
+		if ! [[ -f .includes ]]; then
+			touch .includes
+		fi
+		echo "$((`cat .includes`+1))" > .includes
+		num=`cat .includes`
+		chmod +x compile.sh
+		./compile.sh "include/${argument[0]}" "$2" ".include_`cat .includes`" "$auto" || abort_compiling "Failed to include ${argument[0]} - error $?" $?
+		if [ -f "./output/.include_$num" ]; then
+			cat "./output/.include_$num" | tee -a "./output/$FILE" > /dev/null
+		fi
+		echo "$((`cat .includes`-1))" > .includes
+	fi
+	PRG[${#PRG[@]}]="${OLDPRG[$(($i1-1))]}"
+done
+if [[ "$3" = "" ]]; then
+	if [[ `ls -a output | grep \.include` != "" ]]; then
+		rm ./output/.include*
+	fi
+	if [[ -f .includes ]]; then
+		rm .includes
+	fi
+fi
 tmpid=0
 prg_len="${#PRG[@]}"
 if [[ "$2" != "1" ]]; then
@@ -332,10 +375,10 @@ while (( i1 < prg_len )); do
 done
 chain=0
 contains=1
-until ((contains == 0)) || ((chain >= 50)); do
-	if [[ "$2" != "1" ]]; then
+if [[ "$2" != "1" ]]; then
 		print_info "Compiling additional functions..."
-	fi
+fi
+until ((contains == 0)) || ((chain >= 50)); do
 	if [[ "$arch" = "lithium" ]]; then
 		if [[ "$2" != "1" ]]; then
 			print_info "Skipping because of lack of arch support."
@@ -343,12 +386,23 @@ until ((contains == 0)) || ((chain >= 50)); do
 		break
 	fi
 	chain=$((chain+1))
-	IFS=$'\r\n' GLOBIGNORE='*' command eval  'PRG=($(cat ./output/$FILE))'
-	rm "./output/$FILE"
-	prg_len="${#PRG[@]}"
+	if [ -f ./output/$FILE ]; then
+		IFS=$'\r\n' GLOBIGNORE='*' command eval  'PRG=($(cat ./output/$FILE))'
+		rm "./output/$FILE"
+		prg_len="${#PRG[@]}"
+	else
+		prg_len=0
+	fi
+	if ((prg_len == 0)); then
+		if [[ "$2" != "1" ]]; then
+			print_info "Skipping because the output file is empty."
+		fi
+		break
+	fi
 	i1=0
 	while (( i1 < prg_len )); do
 		i1="$(($i1+1))"
+		contains=0
 		if [[ "${PRG[$(($i1-1))]}" = ">>" ]]; then
 			echo ">>" >> "./output/$FILE"
 			echo "${PRG[$i1]}" >> "./output/$FILE"
@@ -356,7 +410,6 @@ until ((contains == 0)) || ((chain >= 50)); do
 			i1="$(($i1+2))"
 		else
 			process_command "${PRG[$(($i1-1))]}"
-			contains=0
 			ai4=0
 			while ((ai4 < ${#functions})); do
 				ai4=$((ai4+1))
@@ -404,6 +457,9 @@ fi
 if [[ "$2" != "1" ]]; then
 	print_info "Searching for additional syntax errors..."
 fi
+if ! [ -f ./output/$FILE ]; then
+	touch ./output/$FILE
+fi
 IFS=$'\r\n' GLOBIGNORE='*' command eval  'PRG=($(cat ./output/$FILE))'
 ifs=0
 i1=0
@@ -429,7 +485,9 @@ done
 if ((ifs != 0)); then
 	abort_compiling "Number of if statements doesn't equal number of endif statements." 0 -3
 fi
-rm -rf ./.functions
+if [[ "$3" = "" ]]; then
+	rm -rf ./.functions
+fi
 rm "./output/${FILE}.old"
 if [ -f .tmp.old ]; then
 	rm .tmp.old

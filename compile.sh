@@ -74,6 +74,7 @@ cmd_db ()
 	touch .functions/write
 	touch .functions/include
 	touch .functions/mkdir
+	touch .functions/sync
 }
 process_command ()
 {

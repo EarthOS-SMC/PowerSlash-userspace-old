@@ -73,6 +73,7 @@ cmd_db ()
 	touch .functions/ls
 	touch .functions/write
 	touch .functions/include
+	touch .functions/mkdir
 }
 process_command ()
 {

@@ -75,6 +75,7 @@ cmd_db ()
 	touch .functions/include
 	touch .functions/mkdir
 	touch .functions/sync
+	touch .functions/getletterindex
 }
 process_command ()
 {

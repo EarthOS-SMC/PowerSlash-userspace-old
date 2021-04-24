@@ -838,60 +838,59 @@ case "${command[0]}" in
 		fi
 		rm "./output/${FILE}.old" && cp "./output/$FILE" "./output/${FILE}.old"
 		;;
-# Linkdefs not supported yet
-#	"linkdef")
-#		# Linkable (library) function definition.
-#		if ((${#command[@]} != 2)); then
-#			abort_compiling "Number of arguments must be 1." 1 1
-#		fi
-#		process_argument "${command[1]}"
-#		if ((${#argument[@]} != 1)) && ((${#argument[@]} != 2)) && ((${#argument[@]} != 3)); then
-#			abort_compiling "Number of inputs in the first argument must be 1, 2 or 3." 1 10
-#		fi
-#		if ((def != 0)); then
-#			abort_compiling "Can't define a function inside another function." 1 12
-#		fi
-#		def=$i1
-#		deftype="lib"
-#		if [[ "${argument[0]:0:1}" != '"' ]] && [[ "${argument[0]:0:1}" != "'" ]]; then
-#			abort_compiling "Can't get function name from a variable." 1 15
-#		fi
-#		if [[ "${argument[1]}" != "" ]]; then
-#			if [[ "${argument[1]:0:1}" != '"' ]] && [[ "${argument[1]:0:1}" != "'" ]]; then
-#				abort_compiling "Can't get library ID from a variable." 1 15
-#			fi
-#		fi
-#		if [[ "${argument[2]}" != "" ]]; then
-#			if [[ "${argument[2]:0:1}" != '"' ]] && [[ "${argument[2]:0:1}" != "'" ]]; then
-#				abort_compiling "Can't get library type from a variable." 1 15
-#			fi
-#		fi
-#		process_argument2 "${command[1]}"
-#		defname="${argument[0]}"
-#		last_libid="${argument[1]}"
-#		if ((last_libid > 0)) && (( last_libid <= $((libid+1)) )); then
-#			abort_compiling "Conflicting library ID. Numbers are not recommended!" 1 15
-#		fi
-#		if [[ "${argument[2]}" = "" ]]; then
-#			lib_type="local"
-#		else
-#			case "${argument[2]}" in
-#				"local")
-#					lib_type="local"
-#					;;
-#				"global")
-#					lib_type="global"
-#					;;
-#				*)
-#					abort_compiling "Unknown library type '${argument[2]}'" 1 15
-#					;;
-#			esac
-#		fi
-#		if [ -f "./.functions/$defname" ]; then
-#			abort_compiling "Command or function '${defname}' already exists." 1 14
-#		fi
-#		rm "./output/${FILE}.old" && cp "./output/$FILE" "./output/${FILE}.old"
-#		;;
+	"linkdef")
+		# Linkable (library) function definition.
+		if ((${#command[@]} != 2)); then
+			abort_compiling "Number of arguments must be 1." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 1)) && ((${#argument[@]} != 2)) && ((${#argument[@]} != 3)); then
+			abort_compiling "Number of inputs in the first argument must be 1, 2 or 3." 1 10
+		fi
+		if ((def != 0)); then
+			abort_compiling "Can't define a function inside another function." 1 12
+		fi
+		def=$i1
+		deftype="lib"
+		if [[ "${argument[0]:0:1}" != '"' ]] && [[ "${argument[0]:0:1}" != "'" ]]; then
+			abort_compiling "Can't get function name from a variable." 1 15
+		fi
+		if [[ "${argument[1]}" != "" ]]; then
+			if [[ "${argument[1]:0:1}" != '"' ]] && [[ "${argument[1]:0:1}" != "'" ]]; then
+				abort_compiling "Can't get library ID from a variable." 1 15
+			fi
+		fi
+		if [[ "${argument[2]}" != "" ]]; then
+			if [[ "${argument[2]:0:1}" != '"' ]] && [[ "${argument[2]:0:1}" != "'" ]]; then
+				abort_compiling "Can't get library type from a variable." 1 15
+			fi
+		fi
+		process_argument2 "${command[1]}"
+		defname="${argument[0]}"
+		last_libid="${argument[1]}"
+		if ((last_libid > 0)) && (( last_libid <= $((libid+1)) )); then
+			abort_compiling "Conflicting library ID. Numbers are not recommended!" 1 15
+		fi
+		if [[ "${argument[2]}" = "" ]]; then
+			lib_type="local"
+		else
+			case "${argument[2]}" in
+				"local")
+					lib_type="local"
+					;;
+				"global")
+					lib_type="global"
+					;;
+				*)
+					abort_compiling "Unknown library type '${argument[2]}'" 1 15
+					;;
+			esac
+		fi
+		if [ -f "./.functions/$defname" ]; then
+			abort_compiling "Command or function '${defname}' already exists." 1 14
+		fi
+		rm "./output/${FILE}.old" && cp "./output/$FILE" "./output/${FILE}.old"
+		;;
 	"{")
 		# Function definition start.
 		if ((${#command[@]} > 1)); then
@@ -953,10 +952,11 @@ case "${command[0]}" in
 			else
 				prefix=""
 			fi
+			tmp0='"'
 			echo ">>" >> "./output/$FILE"
 			echo "${prefix}tmp_lib_$cur_libid" >> "./output/$FILE"
 			echo "$image" >> "./output/$FILE"
-			echo "1B/${prefix}tmp_lib_$cur_libid" > .functions/$defname
+			echo "1B/${prefix}tmp_lib_${cur_libid},${tmp0}wait${tmp0},%whoami" > .functions/$defname
 			rm .tmp
 		fi
 		if [[ "$disout" != "1" ]]; then

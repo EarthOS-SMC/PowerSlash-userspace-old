@@ -77,6 +77,7 @@ cmd_db ()
 	touch .functions/sync
 	touch .functions/getletterindex
 	touch .functions/kmsg
+	touch .functions/smc_skiploop
 }
 process_command ()
 {

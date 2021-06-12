@@ -1602,6 +1602,21 @@ case "${command[0]}" in
 		fi
 		echo "3F/${command[1]}/${command[2]}/${command[3]}" >> "./output/$FILE"
 		;;
+	"ftest")
+		# Test file/dir.
+		if ((${#command[@]} != 3)); then
+			abort_compiling "Number of arguments must be 2." 1 1
+		fi
+		process_argument "${command[1]}"
+		if ((${#argument[@]} != 3)); then
+			abort_compiling "Number of inputs in the first argument must be 3." 1 10
+		fi
+		process_argument "${command[2]}"
+		if ((${#argument[@]} != 1)); then
+			abort_compiling "Number of inputs in the first argument must be 1." 1 10
+		fi
+		echo "40/${command[1]}" >> "./output/$FILE"
+		;;
 	"")
 		# Comment.
 		if [[ "$disout" != "1" ]]; then

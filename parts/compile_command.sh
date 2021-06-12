@@ -1615,7 +1615,7 @@ case "${command[0]}" in
 		if ((${#argument[@]} != 1)); then
 			abort_compiling "Number of inputs in the first argument must be 1." 1 10
 		fi
-		echo "40/${command[1]}" >> "./output/$FILE"
+		echo "40/${command[1]}/${command[2]}" >> "./output/$FILE"
 		;;
 	"")
 		# Comment.

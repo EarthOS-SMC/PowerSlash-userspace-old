@@ -82,6 +82,7 @@ cmd_db ()
 	touch .functions/smc_if
 	touch .functions/ftest
 	touch .functions/deletechar
+	touch .functions/mount
 }
 process_command ()
 {

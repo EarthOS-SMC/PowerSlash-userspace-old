@@ -1630,8 +1630,8 @@ case "${command[0]}" in
 			abort_compiling "Number of arguments must be 1." 1 1
 		fi
 		process_argument "${command[1]}"
-		if ((${#argument[@]} != 2)); then
-			abort_compiling "Number of inputs in the first argument must be 2." 1 10
+		if ((${#argument[@]} != 3)); then
+			abort_compiling "Number of inputs in the first argument must be 3." 1 10
 		fi
 		echo "42/${command[1]}" >> "./output/$FILE"
 		;;

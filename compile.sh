@@ -83,6 +83,7 @@ cmd_db ()
 	touch .functions/ftest
 	touch .functions/deletechar
 	touch .functions/mount
+	touch .functions/umount
 }
 process_command ()
 {

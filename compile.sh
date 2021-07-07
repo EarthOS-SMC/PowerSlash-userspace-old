@@ -84,6 +84,7 @@ cmd_db ()
 	touch .functions/deletechar
 	touch .functions/mount
 	touch .functions/umount
+	touch .functions/geterror
 }
 process_command ()
 {

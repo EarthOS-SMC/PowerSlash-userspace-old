@@ -1,6 +1,4 @@
-# PowerSlash-userspace
+# PowerSlash-userspace (outdated)
 PowerSlash userspace compiler for the EarthOS kernel
 
-Please use the [PowerSlash compiler](https://github.com/adazem009/PowerSlash) readme.
-
-This compiler compiles **userspace** programs, which can be executed by the EarthOS kernel.
+This is an outdated compiler, use the new version instead. (EarthOS_build_pwuc)
